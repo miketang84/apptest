@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=" "/>
+    <meta name="description" content=" "/>
+    <meta http-equiv="Content-Language" content="utf-8" />
+    
+    <script type="text/javascript" src="/media/js/jquery-1.5.min.js"></script>
+
+    <script>
+    </script>
+    
+    <title> Bamboo </title>
+</head>
+
+<body>
+
+<div class="container">
+	Welcome to Bamboo.
+
+<form action="/addperson/" method="post">
+username:<input type="text" name="username"/><br/>
+gender:<input type="text" name="gender"/><br/>
+age:<input type="text" name="age"/><br/>
+<input type="submit" value="POST"/>
+</form>
+
+Test get.
+{{getobj.username}} {{getobj.gender}} {{getobj.age}} <br/>
+{{getobj2.username}} {{getobj2.gender}} {{getobj2.age}} <br/>
+{{getobj3.username}} {{getobj3.gender}} {{getobj3.age}} <br/>
+
+
+
+<span>{{drank}}</span> 
+<span>{{did}}</span> 
+<span>{{dpk}}</span> 
+
+{{dobj.username}} {{dobj.gender}} {{dobj.age}} 
+
+{{drankobj.username}} {{drankobj.gender}} {{drankobj.age}} 
+
+
+Test getByIds
+<table>
+<tr><th>编号</th><th>姓名</th><th>性别</th><th>年龄</th></tr>
+{% for i, v in ipairs(some_persons) do %}
+<tr><td>{{i}}</td><td>{{v.username}}</td><td>{{v.gender}}</td><td>{{v.age}}</td></tr>
+{% end %}
+</table>
+
+
+Total:　{{total}}
+<table>
+<tr><th>编号</th><th>姓名</th><th>性别</th><th>年龄</th><th>操作</th></tr>
+{% for i, v in ipairs(persons) do %}
+<tr><td>{{i}}</td><td>{{v.username}}</td><td>{{v.gender}}</td><td>{{v.age}}</td><td><a href="/delperson?pid={{v.id}}">删除</a></td></tr>
+{% end %}
+</table>
+
+<table>
+<tr><th>编号</th><th>姓名</th><th>性别</th><th>年龄</th></tr>
+{% for i, v in ipairs(pparts) do %}
+<tr><td>{{i}}</td><td>{{v.username}}</td><td>{{v.gender}}</td><td>{{v.age}}</td></tr>
+{% end %}
+</table>
+
+
+<table>
+<tr><th>编号</th><th>姓名</th><th>性别</th><th>年龄</th></tr>
+{% for i, v in ipairs(rpparts) do %}
+<tr><td>{{i}}</td><td>{{v.username}}</td><td>{{v.gender}}</td><td>{{v.age}}</td></tr>
+{% end %}
+</table>
+
+
+{% for i, v in ipairs(allids) do %}
+<span> {{v}}</span> 
+{% end %}
+<br/>
+
+{% for i, v in ipairs(partids) do %}
+<span> {{v}}</span> 
+{% end %}
+<br/>
+
+{% for i, v in ipairs(rpartids) do %}
+<span> {{v}}</span> 
+{% end %}
+<br/>
+
+<!-- <form action="/aaa/" method="post" enctype="multipart/form-data"> -->
+<!-- <input type="file" name="file0"/> -->
+<!-- <input type="submit" value="POST"/> -->
+<!-- </form> -->
+<!-- <img src="/media/1.jpg"></img> -->
+<!-- <img src="/media/2.jpg"></img> -->
+<!-- <img src="/media/3.jpg"></img> -->
+<!-- <img src="/media/3.jpg"></img> -->
+<!-- <img src="/media/2.jpg"></img> -->
+<!-- <img src="/media/1.jpg"></img> -->
+
+</div>
+    
+
+
+</body>
+</html>

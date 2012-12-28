@@ -1,0 +1,848 @@
+require 'bamboo'
+
+local View = require 'bamboo.view'
+
+local Person = require 'models.person'
+bamboo.registerModel(Person)
+local Course = require 'models.course'
+bamboo.registerModel(Course)
+
+
+
+local function index(web, req)
+	local persons = Person:all()
+
+	local pparts = Person:slice(3, 5)
+	local rpparts = Person:slice(3, 5, 'rev')
+
+	local allids = Person:allIds()
+	local partids = Person:sliceIds(3,5)
+	local rpartids = Person:sliceIds(3,5, 'rev')
+
+	local some_persons = Person:getByIds({2,3,4,6})
+
+	local drank = Person:getRankByPrimaryKey(4)
+	local did = Person:getIdByPrimaryKey(4)
+	local dpk = Person:getPrimaryKeyById(4)
+	local dobj = Person:getByPrimaryKey(4)
+	local drankobj = Person:getByRank(3)
+
+	local total = Person:numbers()
+	local getobj = Person:get({age=contains('e')})
+
+	local getobj2 = Person:get({age=startsWith('f'), username=contains('f'),})
+	local getobj3 = Person:get(function (u) if u.username == 'c' then return true end  end)
+
+
+
+    web:page(View("index.html"){'locals', persons = persons, pparts=pparts})
+end
+
+local function addPerson(web, req)
+    local params = req.PARAMS
+	local person = Person()
+	person.username = params.username
+	person.gender = params.gender
+	person.age = params.age
+	person:save()
+
+	web:redirect('/')
+	--local persons = Person:all()
+	
+	--web:page(View("index.html"){persons = persons})
+end
+
+local function view2(web, req)
+	local pid = 1
+	local person = Person:getById(pid)
+	
+    web:page(View("updatePerson.html"){person=person})
+end
+
+local function updatePerson(web, req)
+    local params = req.PARAMS
+	local pid = params.pid or 1
+	local person = Person:getById(pid)
+ptable(person)
+	person.username = params.username
+	person.gender = params.gender
+	person.age = params.age
+	person:save()
+
+	web:redirect('/')
+	--local persons = Person:all()
+	
+	--web:page(View("index.html"){persons = persons})
+end
+
+local function view3(web, req)
+	local pid = 1
+	local person = Person:getById(pid)
+
+    web:page(View("updatePerson2.html"){person=person})
+end
+
+local function updatePerson2(web, req)
+    local params = req.PARAMS
+	local pid = params.pid or 1
+	local person = Person:getById(pid)
+	person:save(params)
+
+	web:redirect('/')
+	--local persons = Person:all()
+	
+	--web:page(View("index.html"){persons = persons})
+end
+
+
+local function view4(web, req)
+	local pid = 1
+	local person = Person:getById(pid)
+    web:page(View("updatePersonUsername.html"){person=person})
+end
+
+local function updatePersonUsername(web, req)
+    local params = req.PARAMS
+	local pid = params.pid or 1
+	local person = Person:getById(pid)
+
+	person:update('username', params.username)
+
+	web:redirect('/')
+	--local persons = Person:all()
+	
+	--web:page(View("index.html"){persons = persons})
+end
+
+local function delPerson(web, req)
+    local params = req.PARAMS
+	local pid = params.pid
+	if not pid then return web:redirect('/') end
+
+--	local person = Person:getById(pid)
+
+	--person:del()
+	Person:delById(pid)
+	web:redirect('/')
+	--local persons = Person:all()
+	
+	--web:page(View("index.html"){persons = persons})
+end
+
+local function foreign(web, req)
+	local pid = req.PARAMS.pid or 1
+	
+	local c = Course {
+		name = 'name'.. math.random(1, 10000),
+		weight = math.random(1, 10),
+		numperweek = math.random(2, 8)
+	}
+
+	c:save()
+
+	local person = Person:getById(pid)
+	
+	person:addForeign('course00', c)
+	person:addForeign('course01', c)
+	person:addForeign('course02', c)
+	person:addForeign('course03', c)
+	person:addForeign('course04', c)
+
+	person:addForeign('course05', serialize(c))
+	person:addForeign('course06', serialize(c))
+	person:addForeign('course07', serialize(c))
+	person:addForeign('course08', serialize(c))
+	person:addForeign('course09', serialize(c))
+
+	person:addForeign('course10', c)
+	person:addForeign('course11', c)
+	person:addForeign('course12', c)
+	person:addForeign('course13', c)
+	person:addForeign('course14', c)
+
+--	return web:redirect('/')
+	--web:page(View("index.html"){persons = persons})
+end
+
+local function getforeign(web, req)
+	local person = Person:getById(1)
+
+local ptable = fptable
+
+	ptable(person:getForeign('course00'))
+
+ptable(
+	person:getForeign('course01')
+)
+ptable(
+	person:getForeign('course02')
+)	
+ptable(
+	person:getForeign('course03')
+)	
+ptable(
+	person:getForeign('course04')
+
+)	
+ptable(
+	person:getForeign('course05')
+)	
+ptable(
+	person:getForeign('course06')
+)	
+ptable(
+	person:getForeign('course07')
+)	
+ptable(
+	person:getForeign('course08')
+)	
+ptable(
+	person:getForeign('course09')
+
+)	
+ptable(
+	person:getForeign('course10')
+)	
+ptable(
+	person:getForeign('course11')
+)	
+ptable(
+	person:getForeign('course12')
+)	
+ptable(
+	person:getForeign('course13')
+)	
+ptable(
+	person:getForeign('course14')
+)	
+end
+
+local function numforeign(web, req)
+	local person = Person:getById(1)
+	
+	print(person:numForeign('course00'))
+	print(person:numForeign('course01'))
+	print(person:numForeign('course02'))
+	print(person:numForeign('course03'))
+	print(person:numForeign('course04'))
+
+	print(person:numForeign('course05'))
+	print(person:numForeign('course06'))
+	print(person:numForeign('course07'))
+	print(person:numForeign('course08'))
+	print(person:numForeign('course09'))
+
+	print(person:numForeign('course10'))
+	print(person:numForeign('course11'))
+	print(person:numForeign('course12'))
+	print(person:numForeign('course13'))
+	print(person:numForeign('course14'))
+
+	return web:page('Hello world!')
+
+end
+
+local function hasforeign(web, req)
+	local person = Person:getById(1)
+	local course = Course:getById(27)
+ptable(course)
+ptable(getmetatable(course).__index)
+print(course.__name)
+
+	print(person:hasForeignMember('course00', course))
+	print(person:hasForeignMember('course01', course))
+	print(person:hasForeignMember('course02', course))
+	print(person:hasForeignMember('course03', course))
+	print(person:hasForeignMember('course04', course))
+
+print(serialize(course))
+
+	print(person:hasForeignMember('course05', serialize(course)))
+	print(person:hasForeignMember('course06', serialize(course)))
+	print(person:hasForeignMember('course07', serialize(course)))
+	print(person:hasForeignMember('course08', serialize(course)))
+	print(person:hasForeignMember('course09', serialize(course)))
+
+	print(person:hasForeignMember('course10', course))
+	print(person:hasForeignMember('course11', course))
+	print(person:hasForeignMember('course12', course))
+	print(person:hasForeignMember('course13', course))
+	print(person:hasForeignMember('course14', course))
+
+	return web:page('Hello world!')
+
+end
+
+
+local function hasforeignkey(web, req)
+	local person = Person:getById(1)
+
+	print(person:hasForeignKey('course10'))
+	print(person:hasForeignKey('course11'))
+	print(person:hasForeignKey('course2'))
+	print(person:hasForeignKey('course13'))
+	print(person:hasForeignKey('course14'))
+
+
+	print(person:getForeignKey('course10'))
+	print(person:getForeignKey('course1'))
+	print(person:getForeignKey('course12'))
+	print(person:getForeignKey('course08'))
+	print(person:getForeignKey('course14'))
+
+	return web:page('Hello world!')
+	
+end
+
+
+local function removeforeignmember(web, req)
+	local person = Person:getById(1)
+	local course = Course:getById(27)
+
+print('-->00')
+	person:removeForeignMember('course00', course)
+	print(person:hasForeignMember('course00', course))
+	person:addForeign('course00', course)
+	print(person:hasForeignMember('course00', course))
+print('--<')
+
+print('-->01')
+	person:removeForeignMember('course01', course)
+	print(person:hasForeignMember('course01', course))
+	person:addForeign('course01', course)
+	print(person:hasForeignMember('course01', course))
+print('--<')
+
+print('-->02')
+	person:removeForeignMember('course02', course)
+	print(person:hasForeignMember('course02', course))
+	person:addForeign('course02', course)
+	print(person:hasForeignMember('course02', course))
+print('--<')
+
+print('-->03')
+	person:removeForeignMember('course03', course)
+	print(person:hasForeignMember('course03', course))
+	person:addForeign('course03', course)
+	print(person:hasForeignMember('course03', course))
+print('--<')
+
+print('-->04')
+	person:removeForeignMember('course04', course)
+	print(person:hasForeignMember('course04', course))
+	person:addForeign('course04', course)
+	print(person:hasForeignMember('course04', course))
+print('--<')
+
+print('-->05')
+	person:removeForeignMember('course05', serialize(course))
+	print(person:hasForeignMember('course05', serialize(course)))
+	person:addForeign('course05', serialize(course))
+	print(person:hasForeignMember('course05', serialize(course)))
+print('--<')
+
+print('-->06')
+	person:removeForeignMember('course06', serialize(course))
+	print(person:hasForeignMember('course06', serialize(course)))
+	person:addForeign('course06', serialize(course))
+	print(person:hasForeignMember('course06', serialize(course)))
+print('--<')
+
+print('-->07')
+	person:removeForeignMember('course07', serialize(course))
+	print(person:hasForeignMember('course07', serialize(course)))
+	person:addForeign('course07', serialize(course))
+	print(person:hasForeignMember('course07', serialize(course)))
+print('--<')
+
+print('-->08')
+	person:removeForeignMember('course08', serialize(course))
+	print(person:hasForeignMember('course08', serialize(course)))
+	person:addForeign('course08', serialize(course))
+	print(person:hasForeignMember('course08', serialize(course)))
+print('--<')
+
+print('-->09')
+	person:removeForeignMember('course09', serialize(course))
+	print(person:hasForeignMember('course09', serialize(course)))
+	person:addForeign('course09', serialize(course))
+	print(person:hasForeignMember('course09', serialize(course)))
+print('--<')
+
+print('-->10')
+	person:removeForeignMember('course10', course)
+	print(person:hasForeignMember('course10', course))
+	print(person:getForeign('course10'))
+	print(person.course10)
+
+
+	person:addForeign('course10', course)
+	print(person:hasForeignMember('course10', course))
+	print(person:getForeign('course10'))
+	print(person.course10)
+
+print('--<')
+
+print('-->11')
+	person:removeForeignMember('course11', course)
+	print(person:hasForeignMember('course11', course))
+	person:addForeign('course11', course)
+	print(person:hasForeignMember('course11', course))
+print('--<')
+
+print('-->12')
+	person:removeForeignMember('course12', course)
+	print(person:hasForeignMember('course12', course))
+	person:addForeign('course12', course)
+	print(person:hasForeignMember('course12', course))
+print('--<')
+
+print('-->13')
+	person:removeForeignMember('course13', course)
+	print(person:hasForeignMember('course13', course))
+	person:addForeign('course13', course)
+	print(person:hasForeignMember('course13', course))
+print('--<')
+
+print('-->14')
+	person:removeForeignMember('course14', course)
+	print(person:hasForeignMember('course14', course))
+	person:addForeign('course14', course)
+	print(person:hasForeignMember('course14', course))
+print('--<')
+
+print('-->15')
+	person:removeForeignMember('course15', course)
+	print(person:hasForeignMember('course15', course))
+	person:addForeign('course15', course)
+	print(person:hasForeignMember('course15', course))
+print('--<')
+
+
+print('-->16')
+	person:removeForeignMember('course15', course)
+	print(person:hasForeignMember('course15', course))
+	person:removeForeignMember('course15', course)
+	print(person:hasForeignMember('course15', course))
+	person:addForeign('course15', course)
+	print(person:hasForeignMember('course15', course))
+	person:addForeign('course15', course)
+	print(person:hasForeignMember('course15', course))
+	person:removeForeignMember('course15', course)
+	print(person:hasForeignMember('course15', course))
+
+print('--<')
+	
+
+	return web:page('Hello world!')
+	
+end
+
+
+local function delforeign(web, req)
+	local person = Person:getById(1)
+
+	local course = Course:getById(25)
+
+	person:addForeign('course15', course)
+	print(person:hasForeignMember('course15', course))
+	print(person:getForeign('course15'))
+
+	print(person:delForeign('course15'))
+	print(person:getForeign('course15'))
+	ptable(Course:getById(25))
+
+print('----')
+	person:addForeign('course15', course)
+	print(person:hasForeignMember('course15', course))
+	print(person:getForeign('course15'))
+
+	print(person:deepDelForeign('course15'))
+	print(person:getForeign('course15'))
+	ptable(Course:getById(25))
+
+
+
+
+	return web:page('Hello world!')
+	
+end
+
+
+local function gbiwf(web, req)
+	local person = Person:getByIdWithForeigns(1, 'course00', 'course01','course02','course03', 'course04',
+
+'course05', 'course06','course07','course08', 'course09',
+'course10', 'course11','course12','course13', 'course14')
+
+--	fptable(person)
+	return web:page('Hello world!')
+end
+
+local function gbidswf(web, req)
+	local persons = Person:getByIdsWithForeigns( {1, 2}, 'course00', 'course01','course02','course03', 'course04',
+
+'course05', 'course06','course07','course08', 'course09',
+'course10', 'course11','course12','course13', 'course14')
+
+	fptable(persons)
+	return web:page('Hello world!')
+end
+
+local function gbif(web, req)
+	local persons = Person:getByIdFields( 1, 'age', 'username')
+
+	fptable(persons)
+	return web:page('Hello world!')
+end
+
+local function gbidsf(web, req)
+	local persons = Person:getByIdsFields( {1,2}, 'age', 'username')
+
+	fptable(persons)
+	return web:page('Hello world!')
+end
+
+local function setcustom(web, req)
+	Person:setCustom('testcustom', 'test')
+	local ret = Person:getCustom('testcustom')
+	assert(ret == 'test')
+
+	Person:setCustom('testcustom_list', {1,2,3}, 'list')
+	ret = Person:getCustom('testcustom_list')
+	assert(ret[1] == '1' and ret[2] == '2' and ret[3] == '3' )
+
+	Person:setCustom('testcustom_set', {1,2,3}, 'set')
+	ret = Person:getCustom('testcustom_set')
+	assert(ret[1] == '1' and ret[2] == '2' and ret[3] == '3' )
+
+	Person:setCustom('testcustom_zset', {1,2,3}, 'zset')
+	ret = Person:getCustom('testcustom_zset')
+	assert(ret[1] == '1' and ret[2] == '2' and ret[3] == '3' )
+
+--	Person:setCustom('testcustom_zset2', {1,2,3}, 'zset', {1.1, 1.3, 1.2})
+	Person:setCustom('testcustom_zset2', {1,2,3}, 'zset', {11, 13, 12})
+
+	ret = Person:getCustom('testcustom_zset2')
+	assert(ret[1] == '1' and ret[2] == '3' and ret[3] == '2' )
+
+	Person:setCustom('testcustom_hash', {x=1,y=2,z=3}, 'hash')
+	ret = Person:getCustom('testcustom_hash')
+	assert(ret.x == '1' and ret.y == '2' and ret.z == '3' )
+
+	Person:setCustom('testcustom_string', 'iamhere')
+	ret = Person:getCustom('testcustom_string')
+	assert(ret=='iamhere')
+
+	ret = Person:getCustom('testcustom_000')
+	assert(ret==nil)
+	
+
+	return web:page('Hello world!')
+
+end
+
+local function addcustom(web, req)
+	Person:addCustomMember('testcustom', 'test')
+	local ret = Person:getCustom('testcustom')
+	assert(ret == 'test')
+
+	Person:addCustomMember('testcustom_list', '5', 'list')
+	ret = Person:hasCustomMember('testcustom_list', '5')
+	assert(ret==true)
+
+	Person:addCustomMember('testcustom_set', '5', 'set')
+	ret = Person:hasCustomMember('testcustom_set', '5')
+	assert(ret==true)
+
+	Person:addCustomMember('testcustom_zset', '5', 'zset')
+	ret = Person:hasCustomMember('testcustom_zset', '5')
+	assert(ret==true)
+
+--	Person:setCustom('testcustom_zset2', {1,2,3}, 'zset', {1.1, 1.3, 1.2})
+	Person:addCustomMember('testcustom_zset2', '5', 'zset', 9)
+	ret = Person:hasCustomMember('testcustom_zset2', '5')
+	assert(ret)
+
+	Person:addCustomMember('testcustom_hash', {w=5}, 'hash')
+	ret = Person:hasCustomMember('testcustom_hash', 'w')
+	assert(ret)
+
+	Person:addCustomMember('testcustom_string', 'iamhere')
+	ret = Person:hasCustomMember('testcustom_string', 'iamhere')
+	assert(ret)
+
+	ret = Person:getCustom('testcustom_000')
+	assert(ret==nil)
+	
+
+	return web:page('Hello world!')
+
+end
+
+
+local function getcustom(web, req)
+	print(Person:getCustomKey('testcustom'))
+	print(Person:getCustomKey('testcustom_list'))
+	print(Person:getCustomKey('testcustom_set'))
+	print(Person:getCustomKey('testcustom_zset'))
+	print(Person:getCustomKey('testcustom_zset2'))
+	print(Person:getCustomKey('testcustom_hash'))
+	print(Person:getCustomKey('testcustom_string'))
+	print(Person:getCustomKey('testcustom_string00'))
+
+
+	print(Person:numCustom('testcustom'))
+	print(Person:numCustom('testcustom_list'))
+	print(Person:numCustom('testcustom_set'))
+	print(Person:numCustom('testcustom_zset'))
+	print(Person:numCustom('testcustom_zset2'))
+	print(Person:numCustom('testcustom_hash'))
+	print(Person:numCustom('testcustom_string'))
+	print(Person:numCustom('testcustom_string00'))
+
+	Person:removeCustomMember('testcustom', 'test')
+	Person:removeCustomMember('testcustom_list', '5')
+	Person:removeCustomMember('testcustom_set', '5')
+	Person:removeCustomMember('testcustom_zset', '5')
+	Person:removeCustomMember('testcustom_zset2', '5')
+	Person:removeCustomMember('testcustom_hash', {w=5})
+	Person:removeCustomMember('testcustom_string', 'iamhere')
+	Person:removeCustomMember('testcustom_string00', '00')
+
+	print(Person:numCustom('testcustom'))
+	print(Person:numCustom('testcustom_list'))
+	print(Person:numCustom('testcustom_set'))
+	print(Person:numCustom('testcustom_zset'))
+	print(Person:numCustom('testcustom_zset2'))
+	print(Person:numCustom('testcustom_hash'))
+	print(Person:numCustom('testcustom_string'))
+	print(Person:numCustom('testcustom_string00'))
+
+
+	return web:page('Hello world!')
+
+end
+
+local function delcustom(web, req)
+	print(Person:getCustomKey('testcustom'))
+	print(Person:getCustomKey('testcustom_list'))
+	print(Person:getCustomKey('testcustom_set'))
+	print(Person:getCustomKey('testcustom_zset'))
+	print(Person:getCustomKey('testcustom_zset2'))
+	print(Person:getCustomKey('testcustom_hash'))
+	print(Person:getCustomKey('testcustom_string'))
+	print(Person:getCustomKey('testcustom_string00'))
+
+	Person:delCustom('testcustom')
+	Person:delCustom('testcustom_list')
+	Person:delCustom('testcustom_set')
+	Person:delCustom('testcustom_zset')
+	Person:delCustom('testcustom_zset2')
+	Person:delCustom('testcustom_hash')
+	Person:delCustom('testcustom_string')
+	Person:delCustom('testcustom_string00')
+	
+	print(Person:getCustomKey('testcustom'))
+	print(Person:getCustomKey('testcustom_list'))
+	print(Person:getCustomKey('testcustom_set'))
+	print(Person:getCustomKey('testcustom_zset'))
+	print(Person:getCustomKey('testcustom_zset2'))
+	print(Person:getCustomKey('testcustom_hash'))
+	print(Person:getCustomKey('testcustom_string'))
+	print(Person:getCustomKey('testcustom_string00'))
+
+	return web:page('Hello world!')
+
+end
+
+
+local function queryset_test ()
+	local persons = Person:all()
+
+print('test querySetIds')	
+	local p = persons:querySetIds()
+	ptable(p)
+
+print('test combineQuerySet')	
+	local p1 = persons:slice(1,3)
+	local p2 = persons:slice(-2, -1)
+	ptable(p1:combineQuerySet(p2))
+
+
+
+print('test orderBy1')	
+	local p = persons:orderBy('age')
+	fptable(p)
+	local p = persons:orderBy('age', 'desc')
+	fptable(p)
+	local p = persons:orderBy('age', 'asc', 'username', 'desc')
+	fptable(p)
+
+print('test orderBy2')	
+	local p = persons:orderBy(function (a, b) return a.username > b.username end)
+	fptable(p)
+	local p = persons:orderBy(function (a, b) return a.age > b.age end, function(a,b) return a.username<b.username end)
+	fptable(p)
+	local p = persons:orderBy(function (a, b) return a.username > b.username end, 'age', 'desc')
+	fptable(p)
+	local p = persons:orderBy('age', 'desc', function (a, b) return a.username > b.username end)
+	fptable(p)
+
+	-- local p = persons:orderBy('age', 'desc')
+	-- fptable(p)
+	-- local p = persons:orderBy('age', 'asc', 'username', 'desc')
+	-- fptable(p)
+
+
+
+print('test queryset get')	
+	local persons = Person:all()
+	local p = persons:get({age=contains('qq')})
+	ptable(p)
+	local p = persons:get({age=contains('qq')}, 'rev')
+	ptable(p)
+
+	local p = persons:get({age='qq'})
+	ptable(p)
+	local p = persons:get({age=contains('qq'), username=contains('t')})
+	ptable(p)
+
+	local p = persons:get(function (u) if u.username:find('q') then return true end end)
+	ptable(p)
+
+	local p = persons:get(function (u) if u.username:find('q') then return true end end, 'rev')
+	ptable(p)
+
+print('test queryset filter')	
+	local persons = Person:all()
+	local p = persons:filter({age=contains('qq')})
+	ptable(p)
+	local p = persons:filter({age=contains('qq')}, 2,-1, 'rev')
+	ptable(p)
+
+	local p = persons:filter({age='qq'})
+	ptable(p)
+	local p = persons:filter({age=contains('qq'), username=contains('t')})
+	ptable(p)
+
+	local p = persons:filter(function (u) if u.username:find('q') then return true end end)
+	ptable(p)
+
+	local p = persons:filter(function (u) if u.username:find('q') then return true end end, 1, -1, 'rev')
+	ptable(p)
+
+
+print('test queryset filter2')	
+	local persons = Person:all()
+	local p = persons:filter({age=contains('qq')})
+	ptable(p)
+	local p = persons:filter({age=contains('qq')}, {
+								 start_point = 2,
+								 length = 1,
+								 find_rev = 'rev'
+												   })
+	ptable(p)
+
+	local p = persons:filter({age=contains('qq')}, {
+								 start_point = 13,
+								 length = 1,
+--								 find_rev = 'rev'
+												   })
+	ptable(p)
+
+	local p = persons:filter({age=contains('qq')}, {
+								 start = 1,
+								 stop = 2,
+								 is_rev = 'rev'
+--								 find_rev = 'rev'
+												   })
+	ptable(p)
+
+	local p = persons:filter(function (u) if u.username:find('q') then return true end end, {
+								 start = 1,
+								 stop = 2,
+								 is_rev = 'rev'
+--								 find_rev = 'rev'
+												   })
+	ptable(p)
+
+
+	-- local p = persons:filter({age='qq'})
+	-- ptable(p)
+	-- local p = persons:filter({age=contains('qq'), username=contains('t')})
+	-- ptable(p)
+
+	-- local p = persons:filter(function (u) if u.username:find('q') then return true end end)
+	-- ptable(p)
+
+	-- local p = persons:filter(function (u) if u.username:find('q') then return true end end, 1, -1, 'rev')
+	-- ptable(p)
+
+
+
+	return web:page('Hello world!')
+
+
+end
+
+
+local function queryset_del ()
+	local persons = Person:all()
+	local p = persons:filter({age=contains('del')})
+	fptable(p)
+
+	p:del()
+
+
+	return web:page('Hello world!')
+	
+end
+
+URLS = {
+    ['/'] = index,
+    ['/index/'] = index,
+
+	['/addperson/'] = addPerson,
+
+	['/view2/'] = view2,
+	['/view3/'] = view3,
+	['/view4/'] = view4,
+
+	['/updateperson/'] = updatePerson,
+	['/updateperson2/'] = updatePerson2,
+	['/updateusername/'] = updatePersonUsername,
+	['/delperson/'] = delPerson,
+
+	['/foreign/'] = foreign,
+	['/getforeign/'] = getforeign,
+	['/numforeign/'] = numforeign,
+	['/hasforeign/'] = hasforeign,
+	['/hasforeignkey/'] = hasforeignkey,
+	['/removeforeignmember/'] = removeforeignmember,
+	['/delforeign/'] = delforeign,
+
+	['/gbiwf/'] = gbiwf,
+	['/gbidswf/'] = gbidswf,
+	['/gbif/'] = gbif,
+	['/gbidsf/'] = gbidsf,
+
+
+	['/setcustom/'] = setcustom,
+	['/addcustom/'] = addcustom,
+	['/getcustom/'] = getcustom,
+
+	['/delcustom/'] = delcustom,
+
+	['/queryset_test/'] = queryset_test,
+	['/queryset_del/'] = queryset_del,
+
+
+
+	['/aaa/'] = function (web, req)
+		print('enter aaa')
+	--	fptable(req)
+print('req.body len', #req.body)
+	end
+}
+
