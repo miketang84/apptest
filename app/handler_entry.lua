@@ -802,6 +802,192 @@ local function queryset_del ()
 	
 end
 
+
+local function test_get ()
+	local obj = Person:get({age=contains('e')})
+ptable(obj)
+
+	local obj = Person:get({age=startsWith('f'), username=contains('f'),})
+ptable(obj)
+
+	local obj = Person:get(function (u) if u.username == 'c' then return true end  end)
+ptable(obj)
+
+
+	local obj = Person:get({age=contains('q')}, 'rev')
+ptable(obj)
+	local obj = Person:get({age=contains('q')}, {
+							   
+							   start_point = 1,
+							   find_rev = 'rev',
+							   
+												})
+ptable(obj)
+
+	local obj = Person:get({age=contains('a')}, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start_point = 1,
+							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+
+local obj = Person:get(function (u) return u.age:find('a') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start_point = 3,
+							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+
+
+	return web:page('Hello world!')
+	
+end
+
+
+local function test_filter ()
+	local obj = Person:filter({age=contains('e')})
+ptable(obj)
+
+	local obj = Person:filter({age=startsWith('f'), username=contains('f'),})
+ptable(obj)
+
+	local obj = Person:filter(function (u) if u.username == 'c' then return true end  end)
+ptable(obj)
+
+
+	local obj = Person:filter({age=contains('q')}, 1,-1,'rev')
+ptable(obj)
+	local obj = Person:filter({age=contains('q')}, {
+							   
+							   start_point = 1,
+							   find_rev = 'rev',
+							   
+												})
+ptable(obj)
+
+	local obj = Person:filter({age=contains('a')}, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start_point = 1,
+							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+
+local obj = Person:filter(function (u) return u.age:find('a') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start_point = 3,
+--							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+
+local obj = Person:filter(function (u) return u.age:find('a') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start = 1,
+							   stop = 5,
+							   
+--							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+local obj = Person:filter(function (u) return u.age:find('a') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start = 1,
+							   stop = 5,
+							   is_rev = 'rev'
+--							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+local obj = Person:filter(function (u) return u.age:find('q') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start = 1,
+							   stop = 5,
+							   
+												})
+fptable(obj)
+
+
+local obj = Person:filter(function (u) return u.age:find('q') end, {
+							   foreigns = {	
+								   'course00',
+								   'course01',
+								   'course05',
+								   'course06',
+								   'course10',
+								   'course11',
+							   },
+							   start = 1,
+							   stop = 5,
+							   is_rev = 'rev'
+--							   find_rev = 'rev',
+							   
+												})
+fptable(obj)
+
+
+	return web:page('Hello world!')
+	
+end
+
+
 URLS = {
     ['/'] = index,
     ['/index/'] = index,
@@ -839,6 +1025,9 @@ URLS = {
 
 	['/queryset_test/'] = queryset_test,
 	['/queryset_del/'] = queryset_del,
+
+	['/test_get/'] = test_get,
+	['/test_filter/'] = test_filter,
 
 
 
