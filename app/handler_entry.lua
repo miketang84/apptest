@@ -987,6 +987,70 @@ fptable(obj)
 	
 end
 
+local socket = require 'socket'
+
+local function genCourses (web, req)
+	local t1 = socket.gettime()
+	
+	for i=1, 10000 do
+		local c = Course {
+			name = 'name'.. math.random(1, 10000),
+			weight = math.random(1, 10),
+			numperweek = math.random(2, 8)
+						 }
+
+		c:save()
+	end
+
+	local t2 = socket.gettime()
+print('delta time: ', t2 - t1)
+
+	return web:page('Hello world!')
+
+end
+
+local function getCoursesGetByIds (web, req)
+	local ids = {}
+	for i=1, 100000 do
+		table.insert(ids, tostring(i))
+	end
+
+
+	local t1 = socket.gettime()
+	local objs = Course:getByIds(ids)
+	local t2 = socket.gettime()
+print('delta time: ', t2 - t1)
+
+
+
+	return web:page('Hello world!')
+
+end
+
+local function benfilter (web, req)
+	local t1 = socket.gettime()
+--	local objs = Course:filter({name=contains('12')})
+	local objs = Course:filter({name='2345'})
+	local t2 = socket.gettime()
+print('delta time: ', t2 - t1)
+print('objs num: ', #objs)
+
+	return web:page('Hello world!')
+
+end
+
+local function benget (web, req)
+	local t1 = socket.gettime()
+--	local objs = Course:filter({name=contains('12')})
+	local objs = Course:get({name='2345'})
+	local t2 = socket.gettime()
+print('delta time: ', t2 - t1)
+
+	return web:page('Hello world!')
+
+end
+
+
 
 URLS = {
     ['/'] = index,
@@ -1028,6 +1092,12 @@ URLS = {
 
 	['/test_get/'] = test_get,
 	['/test_filter/'] = test_filter,
+
+	['/gencourses/'] = genCourses,
+	['/getcourses/'] = getCoursesGetByIds,
+
+	['/benfilter/'] = benfilter,
+	['/benget/'] = benget,
 
 
 

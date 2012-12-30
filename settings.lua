@@ -4,3 +4,4 @@ host = 'lgcms'
 route = '/'
 sender_id = 'xxiiddd'
 use_fake_deletion = true
+rule_index_support = false
